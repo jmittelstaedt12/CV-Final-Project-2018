@@ -23,6 +23,25 @@ def region_of_interest(img):
     mask = np.ones_like(img) * 255
     cv2.fillPoly(mask, np.array([region_of_interest_vertices], np.int32), 0)
     masked_image = cv2.bitwise_and(img,mask)
+    new_vertices = [
+        (0, 0),
+        (0, 0.2*height),
+        (width, 0.2*height),
+        (width, 0),
+    ]
+    mask = np.ones_like(img) * 255
+    cv2.fillPoly(mask, np.array([new_vertices], np.int32), 0)
+    masked_image = cv2.bitwise_and(masked_image,mask)
+
+    new_vertices = [
+        (0, height),
+        (width, height),
+        (width, 0.9*height),
+        (0, 0.9*height),
+    ]
+    mask = np.ones_like(img) * 255
+    cv2.fillPoly(mask, np.array([new_vertices], np.int32), 0)
+    masked_image = cv2.bitwise_and(masked_image,mask)
     return masked_image
 
 
