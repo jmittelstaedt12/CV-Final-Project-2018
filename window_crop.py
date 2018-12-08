@@ -4,15 +4,24 @@ import cv2
 def region_of_interest(img):
     width = img.shape[1]
     height = img.shape[0]
+    # width:0->640
+    # height:0->480
+    # 260->390
+    # 0.406w -> 0.61w
+    # 0.417h->0.67h
     region_of_interest_vertices = [
-        (0, height / 9),
-        (0, (3 * height) / 5),
-        (width / 2, (2 * height) / 5),
-        (width, (3 * height) / 5),
-        (width, height / 9),
+        (0.406*width, 0.417*height),
+        (0.406*width, 0.67*height),
+        (0.61*width, 0.67*height),
+        (0.61*width, 0.417*height),
+        # (0, height / 9),
+        # (0, (3 * height) / 5),
+        # (width / 2, (2 * height) / 5),
+        # (width, (3 * height) / 5),
+        # (width, height / 9),
     ]
-    mask = np.zeros_like(img)
-    cv2.fillPoly(mask, np.array([region_of_interest_vertices], np.int32), 255)
+    mask = np.ones_like(img) * 255
+    cv2.fillPoly(mask, np.array([region_of_interest_vertices], np.int32), 0)
     masked_image = cv2.bitwise_and(img,mask)
     return masked_image
 
@@ -31,9 +40,6 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=3):
         dtype=np.uint8,
     )
     # Loop over all lines and draw them on the blank image.
-    if lines is None:
-        return
-        
     for line in lines:
         for x1, y1, x2, y2 in line:
             cv2.line(line_img, (x1, y1), (x2, y2), color, thickness)
