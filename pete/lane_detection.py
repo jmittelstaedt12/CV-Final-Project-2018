@@ -5,19 +5,19 @@ from mss import mss
 import time
 import window_crop as edge_functions
 import math
-
+import keyboard_control
+import pyautogui
 # testing, PB
-from mask import adaptiveROI 
+from mask import adaptiveROI
 
-def lane_detect(img):
+def lane_detect(img,counter):
     maskedImg = adaptiveROI(img)
-    
-    edges = cv.cvtColor(maskedImg, cv2.COLOR_BGR2GRAY)
-    edges = edgefunction.region_of_interest(edges)
-
-    roi_edges = cv.Canny(maskedImg,100,200)
+    grayScaled = cv.cvtColor(maskedImg, cv.COLOR_BGR2GRAY)
+    # maskedCarImg = edge_functions.filter_out_car(grayScaled)
+    # maskedCarImg = cv.GaussianBlur(maskedCarImg, (7,7), 0)
+    edges = cv.Canny(grayScaled,100,200)
+    roi_edges = edge_functions.region_of_interest(edges)
     roi_edges = cv.GaussianBlur(roi_edges, (7,7), 0)
-
     """
     # Original implementation:
     edges = cv.Canny(img,100,200)
@@ -48,14 +48,14 @@ def lane_detect(img):
                 if(x2 == x1):
                     continue
                 slope = (y2 - y1) / (x2 - x1)
-                if x1 > width/2 and slope > 0: 
+                if x1 > width/2 and slope > 0:
                     newLines.append(line)
                 if x1 < width/2 and slope < 0:
                     newLines.append(line)
 
     lines = newLines
 
-    # Coordinates 
+    # Coordinates
     left_line_x = []
     left_line_y = []
     right_line_x = []
@@ -96,11 +96,12 @@ def lane_detect(img):
             right_line_x,
             deg=1
         ))
-        
+
         right_x_max = width * np.ones_like(left_line_x[1])
         #right_x_max = int(poly_right(max_y))
         right_x_min = int(poly_right(min_y))
-
+        # print(counter)
+        keyboard_control.determine_direction((left_x_max, max_y, left_x_min, min_y),(right_x_max, max_y, right_x_min, min_y),height,width,counter)
         line_image = edge_functions.draw_lines(
             roi_edges,
             [[
