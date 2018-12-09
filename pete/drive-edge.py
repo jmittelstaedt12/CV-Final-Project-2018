@@ -44,10 +44,15 @@ while(1):
     cap = sct.grab(dims)
     gameCap = np.array(Image.frombytes('RGB',(cap.width, cap.height), cap.rgb))
 
-    cv.imshow('GamePlay', cv.cvtColor(gameCap, cv.COLOR_BGR2RGB))
+    #cv.imshow('GamePlay', cv.cvtColor(gameCap, cv.COLOR_BGR2RGB))
 
-    cv.imshow('Edge', lane_detect(gameCap))
+    #cv.imshow('Edge', lane_detect(gameCap))
     
+    # testing adaptiveROI:
+    (navImg,maskImg) = lane_detect(gameCap)
+    cv.imshow('GamePlay',maskImg)
+    cv.imshow('Edge',navImg)
+
     # get input for quitting, running autopilot, etc
     key = cv.waitKey(1)
     if key == ord('q'):

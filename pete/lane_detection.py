@@ -10,16 +10,21 @@ import math
 from mask import adaptiveROI 
 
 def lane_detect(img):
-    """
     maskedImg = adaptiveROI(img)
+    
+    edges = cv.cvtColor(maskedImg, cv2.COLOR_BGR2GRAY)
+    edges = edgefunction.region_of_interest(edges)
+
     roi_edges = cv.Canny(maskedImg,100,200)
     roi_edges = cv.GaussianBlur(roi_edges, (7,7), 0)
-    """
 
+    """
     # Original implementation:
     edges = cv.Canny(img,100,200)
     edges = cv.GaussianBlur(edges, (7,7), 0)
     roi_edges = edge_functions.region_of_interest(edges)
+    maskedImg = roi_edges
+    """
 
     height = roi_edges.shape[0]
     width = roi_edges.shape[1]
@@ -36,8 +41,8 @@ def lane_detect(img):
     )
 
     # check slope degree:
+    newLines = []
     if lines is not None:
-        newLines = []
         for line in lines:
             for x1, y1, x2, y2 in line:
                 if(x2 == x1):
@@ -56,19 +61,20 @@ def lane_detect(img):
     right_line_x = []
     right_line_y = []
 
-    for line in lines:
-        for x1, y1, x2, y2 in line:
-            if(x2 == x1):
-                continue
-            slope = (y2 - y1) / (x2 - x1) # <-- Calculating the slope.
-            if math.fabs(slope) < 0.1: # <-- Only consider extreme slope
-                continue
-            if slope <= 0: # <-- If the slope is negative, left group.
-                left_line_x.extend([x1, x2])
-                left_line_y.extend([y1, y2])
-            else: # <-- Otherwise, right group.
-                right_line_x.extend([x1, x2])
-                right_line_y.extend([y1, y2])
+    if lines is not None:
+        for line in lines:
+            for x1, y1, x2, y2 in line:
+                if(x2 == x1):
+                    continue
+                slope = (y2 - y1) / (x2 - x1) # <-- Calculating the slope.
+                if math.fabs(slope) < 0.1: # <-- Only consider extreme slope
+                    continue
+                if slope <= 0: # <-- If the slope is negative, left group.
+                    left_line_x.extend([x1, x2])
+                    left_line_y.extend([y1, y2])
+                else: # <-- Otherwise, right group.
+                    right_line_x.extend([x1, x2])
+                    right_line_y.extend([y1, y2])
 
     if left_line_x and right_line_x:
         # NOTE; Lines drawn from BOOTUM -> TOP
@@ -101,6 +107,6 @@ def lane_detect(img):
                 [left_x_max, max_y, left_x_min, min_y],
                 [right_x_max, max_y, right_x_min, min_y],
             ]],thickness=5)
-        return line_image
+        return (line_image,maskedImg)
     else:
-        return roi_edges
+        return (roi_edges,maskedImg)
