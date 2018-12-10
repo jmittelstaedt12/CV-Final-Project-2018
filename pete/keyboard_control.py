@@ -19,29 +19,27 @@ def determine_direction(left_line, right_line, height, width, counter):
     d = (det(*line1), det(*line2))
     x = det(d, xdiff) / div
     # if counter % 30:
-    if x < ((1 * width) / 3):
-        print(x,'left')
-        pyautogui.keyDown('left')
-        time.sleep(0.3)
-        pyautogui.keyUp('left')
-        # pyautogui.keyDown('x')
-        pyautogui.keyDown("z")
-        time.sleep(0.1)
+    if x < ((2 * width) / 5):
+        # print(x,'left')
+        # pyautogui.keyUp("z")
         pyautogui.keyUp("z")
+        pyautogui.keyDown("left")
+        time.sleep(0.3)
+        pyautogui.keyUp("left")
+        pyautogui.keyDown("z")
     elif x > ((2 * width) / 3):
-        print(x,'right')
-        pyautogui.keyDown('right')
-        time.sleep(0.3)
-        pyautogui.keyUp('right')
-        pyautogui.keyDown("z")
-        time.sleep(0.1)
+        # print(x,'right')
+        # pyautogui.keyUp("z")
         pyautogui.keyUp("z")
+        pyautogui.keyDown("right")
+        time.sleep(0.3)
+        pyautogui.keyUp("right")
+        pyautogui.keyDown("z")
     else:
-        if counter % 5 == 0:
-            print(x,'straight')
-            pyautogui.keyDown("z")
-            time.sleep(0.6)
-            pyautogui.keyUp("z")
+        # print(x,"straight")
+        pyautogui.keyDown("z")
+        time.sleep(0.2)
+        pyautogui.keyUp("z")
     return x
 
 def input(input_direction):
