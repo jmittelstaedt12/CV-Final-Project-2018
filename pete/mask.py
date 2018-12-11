@@ -15,13 +15,13 @@ def adaptiveROI(img):
 
     # Colors: (IN RGB)
     road_upper = np.array([180,180,180])
-    road_lower = np.array([145,145,145])
+    road_lower = np.array([155,155,155])
     white_upper = np.array([255,255,255])
     white_lower = np.array([206,210,210])
 
     testUp = np.array([255,255,255])
     testLo = np.array([127,127,127])
-    
+
     # Colors (IN HSV):
     # road_upper = np.array([90,5,70])
     # road_lower = np.array([30,5,60])
@@ -45,7 +45,7 @@ def adaptiveROI(img):
     #whites = cv.inRange(target, white_lower, white_upper)
     #mask = cv.bitwise_or(road,whites)
 
-    # erode/dilate to fill/magnify holes 
+    # erode/dilate to fill/magnify holes
     mask = cv.erode(mask, None, iterations=2)
     mask = cv.dilate(mask, None, iterations=2)
 
@@ -55,8 +55,7 @@ def adaptiveROI(img):
     #cv2.fillPoly(mask, np.array([ROI_top], np.int32), 0)
     #cv2.fillPoly(mask, np.array([ROI_car], np.int32), 0)
     #cv2.fillPoly(mask, np.array([ROI_bottom], np.int32), 0)
-    
+
     # apply mask
     masked_image = cv.bitwise_and(target,maskImg,mask=mask)
     return masked_image
-
